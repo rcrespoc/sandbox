@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Entity
-@Table(name = "offices", schema = "public")
+@Table(name = "offices")
 @Data
 public class OfficeEntity {
 
