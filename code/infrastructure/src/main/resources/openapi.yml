@@ -14,6 +14,27 @@ tags:
 
 paths:
   '/v1/office':
+    post:
+      operationId: createOffice
+      summary: Create a new office
+      tags:
+        - Office
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OfficeRequest'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfficeResponse'
+        '400':
+          description: bad request
+        '500':
+          description: internal server error
     get:
       operationId: getOffice
       summary: Get office list
@@ -37,6 +58,16 @@ paths:
 
 components:
   schemas:
+    OfficeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+      required:
+        - name
+        - address
     OfficeResponse:
       type: object
       properties:

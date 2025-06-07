@@ -1,5 +1,6 @@
 package com.sandbox.proyecto.adapter.out.persistence;
 
+import com.sandbox.proyecto.adapter.out.repository.postgre.entity.office.OfficeEntity;
 import com.sandbox.proyecto.adapter.out.repository.postgre.port.office.OfficeRepository;
 import com.sandbox.proyecto.application.usecase.offices.port.out.OfficesPersistence;
 import com.sandbox.proyecto.domain.model.offices.Office;
@@ -24,4 +25,9 @@ public class OfficesPersistenceAdapter implements OfficesPersistence {
         .toList();
   }
 
+  @Override
+  public Office createOffice(Office office) {
+    final OfficeEntity officeEntity = this.officeMapper.toOfficeEntity(office);
+    return this.officeMapper.toOffice(this.officeRepository.save(officeEntity));
+  }
 }

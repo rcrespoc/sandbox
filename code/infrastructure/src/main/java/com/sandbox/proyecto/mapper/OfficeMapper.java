@@ -3,7 +3,12 @@ package com.sandbox.proyecto.mapper;
 import com.sandbox.proyecto.adapter.out.repository.postgre.entity.office.OfficeEntity;
 import com.sandbox.proyecto.domain.model.offices.Office;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.openapitools.model.OfficeRequestDTO;
 import org.openapitools.model.OfficeResponseDTO;
+
+import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface OfficeMapper {
@@ -12,6 +17,14 @@ public interface OfficeMapper {
 
   Office toOffice(OfficeEntity officeEntity);
 
+  @Mapping(target = "id", source = ".", qualifiedByName = "mapId")
+  Office toOffice(OfficeRequestDTO officeRequestDTO);
+
   OfficeEntity toOfficeEntity(Office office);
+
+  @Named("mapId")
+  default UUID mapId(OfficeRequestDTO officeRequestDTO) {
+    return UUID.randomUUID();
+  }
 
 }

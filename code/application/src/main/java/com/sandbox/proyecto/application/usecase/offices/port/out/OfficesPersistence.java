@@ -10,4 +10,6 @@ public interface OfficesPersistence {
 
   List<Office> getOffices();
 
+  Office createOffice(Office office);
+
 }
