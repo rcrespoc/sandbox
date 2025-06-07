@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: Sandbox API
+  version: 1.0.0
+  description: This is a sample server for a sandbox API.
+
+servers:
+  - url: http://localhost:8081
+    description: Local server
+
+tags:
+  - name: Office
+    description: Operations about offices
+
+paths:
+  '/v1/office':
+    get:
+      operationId: getOffice
+      summary: Get office list
+      tags:
+        - Office
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OfficeResponse'
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+
+components:
+  schemas:
+    OfficeResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          format: uuid
+          description: Unique identifier for the office
+        name:
+          type: string
+        address:
+          type: string
+      required:
+        - id
+        - name
+        - address

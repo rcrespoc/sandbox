@@ -26,4 +26,51 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <inputSpec>${project.basedir}/src/main/resources/openapi.yml</inputSpec>
+                    <generatorName>spring</generatorName>
+                    <output>${project.build.directory}/generated-sources/openapi</output>
+                    <modelNameSuffix>DTO</modelNameSuffix>
+                    <configOptions>
+                        <dateLibrary>java8</dateLibrary>
+                        <java21>true</java21>
+                        <useTags>true</useTags>
+                        <useJakartaEe>true</useJakartaEe>
+                    </configOptions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals><goal>add-source</goal></goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/openapi/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+
 </project>
