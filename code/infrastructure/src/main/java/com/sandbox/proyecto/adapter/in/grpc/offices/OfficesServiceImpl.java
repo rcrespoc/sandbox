@@ -3,8 +3,10 @@ package com.sandbox.proyecto.adapter.in.grpc.offices;
 import com.sandbox.proyecto.Empty;
 import com.sandbox.proyecto.Office;
 import com.sandbox.proyecto.OfficeServiceGrpc;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,13 +14,22 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class OfficesServiceImpl extends OfficeServiceGrpc.OfficeServiceImplBase {
 
   private final List<StreamObserver<Office>> subscribers = new ArrayList<>();
 
   @Override
   public void listenOffices(Empty request, StreamObserver<Office> responseObserver) {
+
+    ServerCallStreamObserver<Office> serverCallStreamObserver = (ServerCallStreamObserver<Office>) responseObserver;
+    serverCallStreamObserver.setOnCancelHandler(() -> {
+      log.warn("Client cancelled the request");
+      this.subscribers.remove(responseObserver);
+    });
+
     this.subscribers.add(responseObserver);
+    log.info("New subscriber added. Total subscribers: {}", this.subscribers.size());
   }
 
   public void notifySubscribers(Office office) {
