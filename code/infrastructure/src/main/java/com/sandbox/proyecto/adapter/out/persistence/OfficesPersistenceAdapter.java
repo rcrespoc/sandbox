@@ -1,5 +1,6 @@
 package com.sandbox.proyecto.adapter.out.persistence;
 
+import com.sandbox.proyecto.adapter.in.grpc.offices.OfficesServiceImpl;
 import com.sandbox.proyecto.adapter.out.repository.postgre.entity.office.OfficeEntity;
 import com.sandbox.proyecto.adapter.out.repository.postgre.port.office.OfficeRepository;
 import com.sandbox.proyecto.application.usecase.offices.port.out.OfficesPersistence;
@@ -18,6 +19,8 @@ public class OfficesPersistenceAdapter implements OfficesPersistence {
 
   private final OfficeMapper officeMapper;
 
+  private final OfficesServiceImpl officesServiceImpl;
+
   @Override
   public List<Office> getOffices() {
     return this.officeRepository.findAll()
@@ -28,6 +31,9 @@ public class OfficesPersistenceAdapter implements OfficesPersistence {
   @Override
   public Office createOffice(Office office) {
     final OfficeEntity officeEntity = this.officeMapper.toOfficeEntity(office);
-    return this.officeMapper.toOffice(this.officeRepository.save(officeEntity));
+    final OfficeEntity createdOffice = this.officeRepository.save(officeEntity);
+    final Office officeSaved = this.officeMapper.toOffice(createdOffice);
+    this.officesServiceImpl.notifySubscribers(this.officeMapper.toOfficeGrpc(officeSaved));
+    return officeSaved;
   }
 }

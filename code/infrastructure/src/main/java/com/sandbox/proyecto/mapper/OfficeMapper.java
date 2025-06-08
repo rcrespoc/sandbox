@@ -27,4 +27,6 @@ public interface OfficeMapper {
     return UUID.randomUUID();
   }
 
+  com.sandbox.proyecto.Office toOfficeGrpc(Office office);
+
 }

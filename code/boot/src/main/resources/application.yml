@@ -15,5 +15,9 @@ spring:
       hibernate:
         dialect:
 
+grpc:
+  server:
+    port: 6565
+
 sandbox:
   property: "Hola Mundo!"
