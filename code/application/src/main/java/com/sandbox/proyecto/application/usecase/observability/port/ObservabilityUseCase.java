@@ -13,4 +13,8 @@ public interface ObservabilityUseCase {
 
   <T> void initGaugeSubscribers(List<T> subscribers);
 
+  Timer.Sample startTimer();
+
+  void stopTimer(Timer.Sample sample, Metrics metricName);
+
 }

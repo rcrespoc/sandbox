@@ -34,4 +34,14 @@ public class ObservabilityUseCaseImpl implements ObservabilityUseCase {
         .description("Total number of subscribers")
         .register(this.meterRegistry);
   }
+
+  @Override
+  public Timer.Sample startTimer() {
+    return Timer.start(this.meterRegistry);
+  }
+
+  @Override
+  public void stopTimer(Timer.Sample sample, Metrics metricName) {
+    sample.stop(this.meterRegistry.timer(metricName.getName()));
+  }
 }

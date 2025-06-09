@@ -6,6 +6,7 @@ import com.sandbox.proyecto.OfficeServiceGrpc;
 import com.sandbox.proyecto.application.usecase.observability.port.ObservabilityUseCase;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
+import io.micrometer.core.instrument.Timer;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +28,10 @@ public class OfficesServiceImpl extends OfficeServiceGrpc.OfficeServiceImplBase 
 
   @Override
   public void listenOffices(Empty request, StreamObserver<Office> responseObserver) {
-
+    Timer.Sample sample = this.observabilityUseCase.startTimer();
     ServerCallStreamObserver<Office> serverCallStreamObserver = (ServerCallStreamObserver<Office>) responseObserver;
     serverCallStreamObserver.setOnCancelHandler(() -> {
+      this.observabilityUseCase.stopTimer(sample, SUBSCRIPTION_DURATION);
       log.warn("Client cancelled the request");
       this.subscribers.remove(responseObserver);
       this.observabilityUseCase.sendMetric(SUBSCRIBER_CANCEL);

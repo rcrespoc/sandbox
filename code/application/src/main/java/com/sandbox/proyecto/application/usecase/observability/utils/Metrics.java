@@ -11,6 +11,7 @@ public enum Metrics {
   SEND_GRPC_EVENT("send_grpc_event"),
   SUBSCRIBER("subscriber"),
   SUBSCRIPTORS_TOTAL("subscriptors_total"),
+  SUBSCRIPTION_DURATION("subscription_duration"),
   SUBSCRIBER_CANCEL("subscriber_cancel");
 
 
