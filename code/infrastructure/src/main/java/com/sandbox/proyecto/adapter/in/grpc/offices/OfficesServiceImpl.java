@@ -6,6 +6,7 @@ import com.sandbox.proyecto.OfficeServiceGrpc;
 import com.sandbox.proyecto.application.usecase.observability.port.ObservabilityUseCase;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -42,5 +43,10 @@ public class OfficesServiceImpl extends OfficeServiceGrpc.OfficeServiceImplBase 
   public void notifySubscribers(Office office) {
     this.subscribers.forEach(subscriber -> subscriber.onNext(office));
     this.observabilityUseCase.sendMetric(SEND_GRPC_EVENT);
+  }
+
+  @PostConstruct
+  public void init() {
+    this.observabilityUseCase.initGaugeSubscribers(subscribers);
   }
 }

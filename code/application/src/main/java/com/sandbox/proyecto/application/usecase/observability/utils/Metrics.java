@@ -10,6 +10,7 @@ public enum Metrics {
   GET_OFFICES("get_offices"),
   SEND_GRPC_EVENT("send_grpc_event"),
   SUBSCRIBER("subscriber"),
+  SUBSCRIPTORS_TOTAL("subscriptors_total"),
   SUBSCRIBER_CANCEL("subscriber_cancel");
 
 
