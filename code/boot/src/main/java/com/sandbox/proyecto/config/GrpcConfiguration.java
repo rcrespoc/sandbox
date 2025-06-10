@@ -1,6 +1,6 @@
 package com.sandbox.proyecto.config;
 
-import com.sandbox.proyecto.adapter.in.grpc.offices.OfficesServiceImpl;
+import com.sandbox.proyecto.adapter.in.grpc.offices.BuildingServiceImpl;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class GrpcConfiguration implements CommandLineRunner {
 
-  private final OfficesServiceImpl officesServiceImpl;
+  private final BuildingServiceImpl officesServiceImpl;
 
   private final GrpcConfigurationProperties grpcConfigurationProperties;
 

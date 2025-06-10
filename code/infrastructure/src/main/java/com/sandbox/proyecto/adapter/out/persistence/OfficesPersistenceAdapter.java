@@ -1,6 +1,6 @@
 package com.sandbox.proyecto.adapter.out.persistence;
 
-import com.sandbox.proyecto.adapter.in.grpc.offices.OfficesServiceImpl;
+import com.sandbox.proyecto.adapter.in.grpc.offices.BuildingServiceImpl;
 import com.sandbox.proyecto.adapter.out.repository.postgre.entity.office.OfficeEntity;
 import com.sandbox.proyecto.adapter.out.repository.postgre.port.office.OfficeRepository;
 import com.sandbox.proyecto.application.usecase.offices.port.out.OfficesPersistence;
@@ -19,7 +19,7 @@ public class OfficesPersistenceAdapter implements OfficesPersistence {
 
   private final OfficeMapper officeMapper;
 
-  private final OfficesServiceImpl officesServiceImpl;
+  private final BuildingServiceImpl officesServiceImpl;
 
   @Override
   public List<Office> getOffices() {

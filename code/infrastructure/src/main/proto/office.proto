@@ -1,16 +1,26 @@
 syntax = "proto3";
 
-package office;
+package building;
 option java_multiple_files = true;
 option java_package = "com.sandbox.proyecto";
 
-service OfficeService {
-  rpc ListenOffices(Empty) returns (stream Office);
+service BuildingService {
+  rpc ListenBuildings(BuildingId) returns (stream Building);
+}
+
+message Building {
+    string id = 1;
+    string name = 2;
+    string address = 3;
+    repeated Office offices = 4;
 }
 
 message Office {
-  string id = 1;
-  string name = 2;
+    string id = 1;
+    string name = 2;
+    string buildingId = 3;
 }
 
-message Empty {}
+message BuildingId {
+    string id = 1;
+}
