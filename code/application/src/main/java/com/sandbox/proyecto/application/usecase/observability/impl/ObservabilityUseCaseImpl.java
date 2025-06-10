@@ -2,13 +2,12 @@ package com.sandbox.proyecto.application.usecase.observability.impl;
 
 import com.sandbox.proyecto.application.usecase.observability.port.ObservabilityUseCase;
 import com.sandbox.proyecto.application.usecase.observability.utils.Metrics;
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.sandbox.proyecto.application.usecase.observability.utils.Metrics.SUBSCRIPTORS_TOTAL;
 
@@ -19,8 +18,13 @@ public class ObservabilityUseCaseImpl implements ObservabilityUseCase {
   private final MeterRegistry meterRegistry;
 
   @Override
+  public void sendMetric(Metrics metricName, Map<String, String> tags) {
+    this.meterRegistry.counter(metricName.getName(), getTags(tags)).increment();
+  }
+
+  @Override
   public void sendMetric(Metrics metricName) {
-    this.meterRegistry.counter(metricName.getName()).increment();
+    this.sendMetric(metricName, Map.of());
   }
 
   @Override
@@ -43,5 +47,13 @@ public class ObservabilityUseCaseImpl implements ObservabilityUseCase {
   @Override
   public void stopTimer(Timer.Sample sample, Metrics metricName) {
     sample.stop(this.meterRegistry.timer(metricName.getName()));
+  }
+
+  private static Tags getTags(final Map<String, String> tagsInput) {
+    Tags tags = Tags.empty();
+    for (final Map.Entry<String, String> entry : tagsInput.entrySet()) {
+      tags = tags.and(entry.getKey(), entry.getValue());
+    }
+    return tags;
   }
 }

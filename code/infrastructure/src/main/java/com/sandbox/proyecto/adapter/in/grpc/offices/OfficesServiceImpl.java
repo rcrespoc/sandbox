@@ -12,8 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.sandbox.proyecto.application.usecase.observability.utils.Metrics.*;
 
@@ -22,7 +21,7 @@ import static com.sandbox.proyecto.application.usecase.observability.utils.Metri
 @Slf4j
 public class OfficesServiceImpl extends OfficeServiceGrpc.OfficeServiceImplBase {
 
-  private final List<StreamObserver<Office>> subscribers = new ArrayList<>();
+  private final Map<Integer, StreamObserver<Office>> subscribers = new HashMap<>();
 
   private final ObservabilityUseCase observabilityUseCase;
 
@@ -33,22 +32,23 @@ public class OfficesServiceImpl extends OfficeServiceGrpc.OfficeServiceImplBase 
     serverCallStreamObserver.setOnCancelHandler(() -> {
       this.observabilityUseCase.stopTimer(sample, SUBSCRIPTION_DURATION);
       log.warn("Client cancelled the request");
-      this.subscribers.remove(responseObserver);
-      this.observabilityUseCase.sendMetric(SUBSCRIBER_CANCEL);
+      StreamObserver<Office> observer = this.subscribers.get(responseObserver.hashCode());
+      this.subscribers.remove(observer.hashCode());
+      this.observabilityUseCase.sendMetric(SUBSCRIBER_CANCEL, Map.of("ID", String.valueOf(observer.hashCode())));
     });
 
-    this.subscribers.add(responseObserver);
+    this.subscribers.put(responseObserver.hashCode(), responseObserver);
     log.info("New subscriber added. Total subscribers: {}", this.subscribers.size());
-    this.observabilityUseCase.sendMetric(SUBSCRIBER);
+    this.observabilityUseCase.sendMetric(SUBSCRIBER, Map.of("ID", String.valueOf(responseObserver.hashCode())));
   }
 
   public void notifySubscribers(Office office) {
-    this.subscribers.forEach(subscriber -> subscriber.onNext(office));
-    this.observabilityUseCase.sendMetric(SEND_GRPC_EVENT);
+    this.subscribers.values().forEach(subscriber -> subscriber.onNext(office));
+    this.observabilityUseCase.sendMetric(SEND_GRPC_EVENT, Map.of());
   }
 
   @PostConstruct
   public void init() {
-    this.observabilityUseCase.initGaugeSubscribers(subscribers);
+    this.observabilityUseCase.initGaugeSubscribers(List.of(subscribers.values()));
   }
 }

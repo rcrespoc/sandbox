@@ -4,8 +4,11 @@ import com.sandbox.proyecto.application.usecase.observability.utils.Metrics;
 import io.micrometer.core.instrument.Timer;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ObservabilityUseCase {
+
+  void sendMetric(Metrics metricName, Map<String, String> tags);
 
   void sendMetric(Metrics metricName);
 
