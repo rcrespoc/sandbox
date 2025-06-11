@@ -28,7 +28,7 @@ public class BuildingController implements BuildingApi {
 
   @Override
   public ResponseEntity<BuildingResponseDTO> createBuilding(BuildingRequestDTO buildingRequestDTO) {
-    final Building building = this.buildingMapper.toDomain(buildingRequestDTO);
+    final Building building = this.buildingMapper.toDomain(buildingRequestDTO, UUID.randomUUID());
     final Building buildingCreated = this.createBuildingUseCase.create(building);
     return ResponseEntity.ok(this.buildingMapper.toResponseDTO(buildingCreated));
   }

@@ -40,7 +40,7 @@ public class BuildingServiceImpl extends BuildingServiceGrpc.BuildingServiceImpl
   }
 
   public void notifySubscribers(Building building) {
-    this.subscribers.get(building.getId()).forEach(subscriber -> subscriber.onNext(building));
+    this.subscribers.getOrDefault(building.getId(), List.of()).forEach(subscriber -> subscriber.onNext(building));
     this.observabilityUseCase.sendMetric(SEND_GRPC_EVENT, Map.of());
   }
 

@@ -19,4 +19,8 @@ public class Building {
 
   private List<Office> offices;
 
+  public void addOffice(Office office) {
+    this.offices.add(office);
+  }
+
 }

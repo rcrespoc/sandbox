@@ -1,11 +1,10 @@
 package com.sandbox.proyecto.adapter.out.repository.postgre.entity.building;
 
 import com.sandbox.proyecto.adapter.out.repository.postgre.entity.office.OfficeEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +20,12 @@ public class BuildingEntity {
 
   private String address;
 
-  private List<OfficeEntity> offices;
+  @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<OfficeEntity> offices = new ArrayList<>();
+
+  public void addOffice(OfficeEntity officeEntity) {
+    this.offices.add(officeEntity);
+    officeEntity.setBuilding(this);
+  }
 
 }

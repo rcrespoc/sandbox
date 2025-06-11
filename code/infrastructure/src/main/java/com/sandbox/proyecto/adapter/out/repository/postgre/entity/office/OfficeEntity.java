@@ -1,14 +1,13 @@
 package com.sandbox.proyecto.adapter.out.repository.postgre.entity.office;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.sandbox.proyecto.adapter.out.repository.postgre.entity.building.BuildingEntity;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "offices")
+@Table(name = "office")
 @Data
 public class OfficeEntity {
 
@@ -17,6 +16,8 @@ public class OfficeEntity {
 
   private String name;
 
-  private UUID buildingId;
+  @ManyToOne
+  @JoinColumn(name = "building_id")
+  private BuildingEntity building;
 
 }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +33,8 @@ public class OfficesController implements OfficeApi {
   }
 
   @Override
-  public ResponseEntity<OfficeResponseDTO> createOffice(OfficeRequestDTO officeRequestDTO) {
-    final Office office = this.officeMapper.toOffice(officeRequestDTO);
+  public ResponseEntity<OfficeResponseDTO> createOffice(UUID buildingId, OfficeRequestDTO officeRequestDTO) {
+    final Office office = this.officeMapper.toOffice(officeRequestDTO, buildingId);
     final Office createdOffice = this.createOfficeUseCase.createOffice(office);
     return ResponseEntity.ok(this.officeMapper.toOfficeResponseDTO(createdOffice));
   }

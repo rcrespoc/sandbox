@@ -13,4 +13,6 @@ public interface BuildingPersistence {
 
   List<Building> findAllById(UUID id);
 
+  Building findById(UUID id);
+
 }

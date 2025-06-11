@@ -32,6 +32,7 @@ public class BuildingPersistenceAdapter implements BuildingPersistence {
   @Override
   public Building create(Building building) {
     final BuildingEntity buildingEntity = this.buildingMapper.toEntity(building);
+    buildingEntity.getOffices().forEach(officeEntity -> officeEntity.setBuilding(buildingEntity));
     final BuildingEntity createdBuilding = this.buildingRepository.save(buildingEntity);
     final Building buildingSaved = this.buildingMapper.toDomain(createdBuilding);
     this.buildingServiceImpl.notifySubscribers(this.buildingMapper.toGrpc(buildingSaved));
@@ -43,5 +44,12 @@ public class BuildingPersistenceAdapter implements BuildingPersistence {
     return this.buildingRepository.findAllById(id)
         .stream().map(this.buildingMapper::toDomain)
         .toList();
+  }
+
+  @Override
+  public Building findById(UUID id) {
+    return this.buildingRepository.findById(id)
+        .map(this.buildingMapper::toDomain)
+        .orElseThrow();
   }
 }
