@@ -33,12 +33,10 @@ public class BuildingServiceImpl extends BuildingServiceGrpc.BuildingServiceImpl
       this.observabilityUseCase.stopTimer(sample, SUBSCRIPTION_DURATION);
       log.warn("Client cancelled the request");
       this.removeBuildingSubscriber(request.getId(), responseObserver);
-      this.observabilityUseCase.sendMetric(SUBSCRIBER_CANCEL, Map.of("Building", request.getId()));
     });
 
     this.addBuildingSubscriber(request.getId(), responseObserver);
     log.info("New subscriber added. Total subscribers: {}", this.subscribers.size());
-    this.observabilityUseCase.sendMetric(SUBSCRIBER, Map.of("ID", String.valueOf(responseObserver.hashCode())));
   }
 
   public void notifySubscribers(Building building) {
@@ -48,6 +46,7 @@ public class BuildingServiceImpl extends BuildingServiceGrpc.BuildingServiceImpl
 
   @PostConstruct
   public void init() {
+    // TODO: Make a metric by building
     this.observabilityUseCase.initGaugeSubscribers(List.of(subscribers.values()));
   }
 
@@ -55,19 +54,15 @@ public class BuildingServiceImpl extends BuildingServiceGrpc.BuildingServiceImpl
     final List<StreamObserver<Building>> subscribers = this.subscribers.get(id);
     if (subscribers != null) {
       subscribers.remove(responseObserver);
-      log.info("Subscriber removed from the building {}. Total subscribers: {}", id, this.subscribers.size());
+      log.info("Subscriber removed from the building {}. Total subscribers: {}", id, subscribers.size());
       this.observabilityUseCase.sendMetric(SUBSCRIBER_CANCEL, Map.of("Building", id));
     }
   }
 
   private void addBuildingSubscriber(String id, StreamObserver<Building> responseObserver) {
-    final List<StreamObserver<Building>> subscribers = this.subscribers.get(id);
-    if (subscribers == null) {
-      this.subscribers.put(id, new ArrayList<>(List.of(responseObserver)));
-    } else {
-      subscribers.add(responseObserver);
-    }
-    log.info("New subscriber added to the building {}. Total subscribers: {}", id, this.subscribers.size());
+    final List<StreamObserver<Building>> subscribers = this.subscribers.computeIfAbsent(id, k -> new ArrayList<>());
+    subscribers.add(responseObserver);
+    log.info("New subscriber added to the building {}. Total subscribers: {}", id, subscribers.size());
     this.observabilityUseCase.sendMetric(SUBSCRIBER, Map.of("Building", id));
   }
 }

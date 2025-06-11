@@ -11,8 +11,81 @@ servers:
 tags:
   - name: Office
     description: Operations about offices
+  - name: Building
+    description: Operations about buildings
 
 paths:
+  '/v1/building/{buildingId}':
+    get:
+      operationId: getBuildingById
+      summary: Get building by id
+      tags:
+        - Building
+      parameters:
+        - in: path
+          name: buildingId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID of the building to get
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuildingResponse'
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
+  '/v1/building':
+    post:
+      operationId: createBuilding
+      summary: Create a new building
+      tags:
+        - Building
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BuildingRequest'
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildingResponse'
+        '400':
+          description: bad request
+        '500':
+          description: internal server error
+    get:
+      operationId: getBuilding
+      summary: Get building list
+      tags:
+        - Building
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuildingResponse'
+        '400':
+          description: bad request
+        '404':
+          description: not found
+        '500':
+          description: internal server error
   '/v1/office':
     post:
       operationId: createOffice
@@ -58,16 +131,61 @@ paths:
 
 components:
   schemas:
-    OfficeRequest:
+    BuildingRequest:
       type: object
       properties:
         name:
           type: string
         address:
           type: string
+        offices:
+          type: array
+          items:
+            $ref: '#/components/schemas/OfficeRequest'
       required:
         - name
         - address
+    Office:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          format: uuid
+          description: Unique identifier for the office
+        name:
+          type: string
+      required:
+        - id
+        - name
+    BuildingResponse:
+        type: object
+        properties:
+          id:
+            type: string
+            example: 123e4567-e89b-12d3-a456-426614174000
+            format: uuid
+            description: Unique identifier for the building
+          name:
+            type: string
+          address:
+            type: string
+          offices:
+            type: array
+            items:
+              $ref: '#/components/schemas/Office'
+        required:
+          - id
+          - name
+          - address
+          - offices
+    OfficeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
     OfficeResponse:
       type: object
       properties:
@@ -78,9 +196,6 @@ components:
           description: Unique identifier for the office
         name:
           type: string
-        address:
-          type: string
       required:
         - id
         - name
-        - address

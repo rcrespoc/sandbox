@@ -13,6 +13,6 @@ public class Office {
 
   private String name;
 
-  private String address;
+  private UUID buildingId;
 
 }
