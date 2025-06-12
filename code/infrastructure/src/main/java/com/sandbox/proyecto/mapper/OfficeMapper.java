@@ -18,6 +18,7 @@ public interface OfficeMapper {
 
   OfficeResponseDTO toOfficeResponseDTO(Office office);
 
+  @Mapping(target = "buildingId", source = "building.id")
   Office toOffice(OfficeEntity officeEntity);
 
   @Mapping(target = "id", source = ".", qualifiedByName = "mapId")

@@ -45,7 +45,7 @@ public class OfficesPersistenceAdapter implements OfficesPersistence {
     officeEntity.setBuilding(buildingEntity);
     final OfficeEntity createdOffice = this.officeRepository.save(officeEntity);
     final Office officeSaved = this.officeMapper.toOffice(createdOffice);
-    this.buildingService.notifySubscribers(this.buildingMapper.toGrpc(building));
+    this.buildingService.notifySubscribers(this.buildingMapper.toGrpc(building, this.officeMapper));
     return officeSaved;
   }
 }

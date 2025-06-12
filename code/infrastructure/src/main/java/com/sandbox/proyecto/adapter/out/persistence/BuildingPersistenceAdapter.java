@@ -6,6 +6,7 @@ import com.sandbox.proyecto.adapter.out.repository.postgre.port.building.Buildin
 import com.sandbox.proyecto.application.usecase.building.port.out.BuildingPersistence;
 import com.sandbox.proyecto.domain.model.building.Building;
 import com.sandbox.proyecto.mapper.BuildingMapper;
+import com.sandbox.proyecto.mapper.OfficeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,8 @@ public class BuildingPersistenceAdapter implements BuildingPersistence {
 
   private final BuildingServiceImpl buildingServiceImpl;
 
+  private final OfficeMapper officeMapper;
+
   @Override
   public List<Building> findAll() {
     return this.buildingRepository.findAll()
@@ -35,7 +38,7 @@ public class BuildingPersistenceAdapter implements BuildingPersistence {
     buildingEntity.getOffices().forEach(officeEntity -> officeEntity.setBuilding(buildingEntity));
     final BuildingEntity createdBuilding = this.buildingRepository.save(buildingEntity);
     final Building buildingSaved = this.buildingMapper.toDomain(createdBuilding);
-    this.buildingServiceImpl.notifySubscribers(this.buildingMapper.toGrpc(buildingSaved));
+    this.buildingServiceImpl.notifySubscribers(this.buildingMapper.toGrpc(buildingSaved, this.officeMapper));
     return buildingSaved;
   }
 
